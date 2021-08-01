@@ -1,4 +1,4 @@
-use chrono::{NaiveDate, NaiveDateTime};
+use chrono::{DateTime, FixedOffset, NaiveDateTime};
 use postgres::{Client, NoTls, Row};
 use sea_query::{ColumnDef, Iden, Order, PostgresDriver, PostgresQueryBuilder, Query, Table};
 
@@ -43,7 +43,7 @@ fn main() {
                 "bla": 1
             }
         }},
-        timestamp: NaiveDate::from_ymd(2020, 1, 1).and_hms(2, 2, 2),
+        timestamp: DateTime::parse_from_rfc3339("2020-01-01T02:02:02+08:00").unwrap(),
     };
     let (sql, values) = Query::insert()
         .into_table(Document::Table)
@@ -87,7 +87,7 @@ enum Document {
 struct DocumentStruct {
     id: i32,
     json_field: serde_json::Value,
-    timestamp: NaiveDateTime,
+    timestamp: DateTime<FixedOffset>,
 }
 
 impl From<Row> for DocumentStruct {
